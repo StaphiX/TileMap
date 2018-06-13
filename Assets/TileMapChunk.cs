@@ -10,14 +10,14 @@ public class TileMapChunk
 
     GameObject chunk = null;
     GameObject grid = null;
+    GameObject tiles = null;
     Object lineObj = null;
 
     MapObject[,] tTile = null;
 
-    public Vector2Int GetMapPos()
-    {
-        return vMapPosition;
-    }
+    public Vector2Int GetMapPos() { return vMapPosition; }
+    public GameObject GetChunkObject() { return chunk; }
+    public GameObject GetTilesObject() { return tiles; }
 
     public TileMapChunk(Vector2Int _vMapPosition, Vector2Int _vChunkSize, Vector2Int _vTileSize)
     {
@@ -64,12 +64,15 @@ public class TileMapChunk
     {
         int iMapX = (vMapPosition.x + TileManager.CHUNKCOUNT.x / 2) / TileManager.CHUNKCOUNT.x;
         int iMapY = (vMapPosition.y + TileManager.CHUNKCOUNT.y / 2) / TileManager.CHUNKCOUNT.y;
-        chunk = new GameObject("Chunk[" + iMapX + " - " + iMapY +"]");
+        chunk = new GameObject("Chunk [" + iMapX + "][" + iMapY + "]");
+        tiles = new GameObject("Tiles");
 
         Vector2Int vGridPosition = Vector2Int.FloorToInt(vMapPosition) + new Vector2Int(vChunkSize.x/2, vChunkSize.y/2);
         Vector3 vPosition = TileManager.GridToWorld(vGridPosition);
 
         chunk.transform.position = vPosition;
+        tiles.transform.SetParent(chunk.transform);
+        tiles.transform.position = vPosition;
     }
 
     public void SetupGrid()

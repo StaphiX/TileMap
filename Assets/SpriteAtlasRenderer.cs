@@ -9,11 +9,16 @@ public class SpriteAtlasRenderer : MonoBehaviour {
     public SpriteAtlas spriteAtlas;
     private SpriteRenderer spriteRenderer;
 
-	// Use this for initialization
-	void Start ()
+    private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         AddAtlas();
+    }
+
+    // Use this for initialization
+    void Start ()
+    {
+
     }
 	
 	// Update is called once per frame
@@ -61,5 +66,13 @@ public class SpriteAtlasRenderer : MonoBehaviour {
         TileEdge tLeftEdge = new TileEdge(tile, ETileEdge.LEFT);
 
         //Debug.Log(tTopEdge.GetString() + " " + tRightEdge.GetString() + " " + tBottomEdge.GetString() + " " + tLeftEdge.GetString());
+    }
+
+    public void SetSprite(string sprite)
+    {
+        if (spriteAtlas == null || spriteRenderer == null)
+            return;
+
+        spriteRenderer.sprite = spriteAtlas.GetSprite(sprite);
     }
 }
