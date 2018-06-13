@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Tiles
+  m_EditorData:
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 0
+      generateMipMaps: 0
+      readable: 1
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingParameters:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 397e43e6c8d5aad45b8e73a8144cc6b2, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 2369043b8264c264a8a2a972e10fb8f4, type: 3}
+  - {fileID: 21300000, guid: 98e7e954e9e97b7408d0f29965e8e99f, type: 3}
+  - {fileID: 21300000, guid: 7a3f59a9c1e1e6d439656fc45eb63bc6, type: 3}
+  - {fileID: 21300000, guid: b870ee2b03187a94a80f5161f34656a0, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Tile1
+  - Tile3
+  - Tile2
+  - Tile4
+  m_Tag: Tiles
+  m_IsVariant: 0
