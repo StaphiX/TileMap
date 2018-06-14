@@ -9,21 +9,23 @@ public enum ETileEdge
     TOP,
     RIGHT,
     BOTTOM,
-    LEFT
+    LEFT,
+    COUNT
 }
 
 public class TileEdge
 {
     const int SAMPLESIZE = 1;
 
-    ETileEdge eTileEdge;
-    byte[] tBytes;
+    ETileEdge tileEdge;
+    byte[] edgeSample;
 
-	public TileEdge(Sprite sprite, ETileEdge eEdge)
+    public TileEdge(Sprite sprite, ETileEdge edge)
     {
         Rect sourceRect = sprite.sourceRect();
+        tileEdge = edge;
 
-        switch (eEdge)
+        switch (edge)
         {
             case ETileEdge.TOP:
                 GetXEdge(sprite, (int)sourceRect.x, (int)sourceRect.y, (int)sourceRect.width);
@@ -40,38 +42,39 @@ public class TileEdge
         }
     }
 
+    public ETileEdge GetETileEdge()
+    {
+        return tileEdge;
+    }
+
     public string GetString()
     {
-        return Convert.ToBase64String(tBytes);
+        return Convert.ToBase64String(edgeSample);
     }
 
     private void GetXEdge(Sprite sprite, int iX, int iY, int iW)
     {
         byte[] tLeft = sprite.GetXBytes(iX, iY, SAMPLESIZE);
-        byte[] tMid = sprite.GetXBytes(iX+iW/2- SAMPLESIZE/2, iY, SAMPLESIZE);
-        byte[] tRight = sprite.GetXBytes(iX+iW - SAMPLESIZE, iY, SAMPLESIZE);
+        byte[] tMid = sprite.GetXBytes(iX + iW / 2 - SAMPLESIZE / 2, iY, SAMPLESIZE);
+        byte[] tRight = sprite.GetXBytes(iX + iW - SAMPLESIZE, iY, SAMPLESIZE);
 
-        Color cLeft = new Color(tLeft[0]/255.0f, tLeft[1] / 255.0f, tLeft[2] / 255.0f, tLeft[3] / 255.0f);
+        Color cLeft = new Color(tLeft[0] / 255.0f, tLeft[1] / 255.0f, tLeft[2] / 255.0f, tLeft[3] / 255.0f);
         Color cMid = new Color(tMid[0] / 255.0f, tMid[1] / 255.0f, tMid[2] / 255.0f, tMid[3] / 255.0f);
         Color cRight = new Color(tRight[0] / 255.0f, tRight[1] / 255.0f, tRight[2] / 255.0f, tRight[3] / 255.0f);
 
-        Debug.Log("L " + cLeft.ToString() + " M " + cMid + " R " + cRight);
-
-        tBytes = tLeft.Concat(tMid).Concat(tRight).ToArray();
+        edgeSample = tLeft.Concat(tMid).Concat(tRight).ToArray();
     }
 
     private void GetYEdge(Sprite sprite, int iX, int iY, int iH)
     {
         byte[] tTop = sprite.GetYBytes(iX, iY, SAMPLESIZE);
-        byte[] tMid = sprite.GetYBytes(iX, iY+iH/2-SAMPLESIZE/2, SAMPLESIZE);
-        byte[] tBottom = sprite.GetYBytes(iX, iY+iH-SAMPLESIZE, SAMPLESIZE);
+        byte[] tMid = sprite.GetYBytes(iX, iY + iH / 2 - SAMPLESIZE / 2, SAMPLESIZE);
+        byte[] tBottom = sprite.GetYBytes(iX, iY + iH - SAMPLESIZE, SAMPLESIZE);
 
         Color cTop = new Color(tTop[0] / 255.0f, tTop[1] / 255.0f, tTop[2] / 255.0f, tTop[3] / 255.0f);
         Color cMid = new Color(tMid[0] / 255.0f, tMid[1] / 255.0f, tMid[2] / 255.0f, tMid[3] / 255.0f);
         Color cBottom = new Color(tBottom[0] / 255.0f, tBottom[1] / 255.0f, tBottom[2] / 255.0f, tBottom[3] / 255.0f);
 
-        Debug.Log("T " + cTop.ToString() + " M " + cMid + " B " + cBottom);
-
-        tBytes = tTop.Concat(tMid).Concat(tBottom).ToArray();
+        edgeSample = tTop.Concat(tMid).Concat(tBottom).ToArray();
     }
 }

@@ -10,6 +10,8 @@ public class TileManager : MonoBehaviour {
     public static int PIXELSPERUNIT = 64;
     public static int PIXELSCALE = 1;
 
+    private BrushManager brushManager = new BrushManager();
+
     public static TileMap tTileMap = null;
 
     // TESTING VARS
@@ -20,6 +22,7 @@ public class TileManager : MonoBehaviour {
     {
         SetupCamera();
         InitialiseMap();
+        brushManager.Init();
     }
 
     // Use this for initialization

@@ -36,6 +36,8 @@ public class MapObject
         if (go != null)
             return;
 
+
+
         Vector3 positionOffset = TileManager.TileToWorld(tileSize)/2;
         Vector3 position = GetPosition() + positionOffset;
         go = (GameObject)Object.Instantiate(Resources.Load("Tile"));
