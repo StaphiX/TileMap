@@ -2,15 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TileProperties
+public class TileSprite
 {
     TileEdge[] edge = new TileEdge[(int)ETileEdge.COUNT];
     Sprite sprite = null;
 
-    public TileProperties(Sprite sprite)
+    public TileSprite(Sprite sprite)
     {
         this.sprite = sprite;
         SetTileEdges(sprite);
+    }
+
+    public void SetObjectSprite(GameObject go)
+    {
+        if (sprite != null)
+        {
+            SpriteRenderer spriteRenderer = go.GetComponent<SpriteRenderer>();
+            if (spriteRenderer == null)
+                spriteRenderer = go.AddComponent<SpriteRenderer>();
+
+            spriteRenderer.sprite = sprite;
+        }
     }
 
     public TileEdge GetEdge(ETileEdge tileEdge)

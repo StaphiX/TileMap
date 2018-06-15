@@ -13,6 +13,39 @@ public enum ETileEdge
     COUNT
 }
 
+static class ETileEdgeUtil
+{
+    public static ETileEdge Opposite(this ETileEdge e)
+    {
+        int tileEdge = (int)e;
+        int iOpposite = tileEdge + 2;
+
+        if (iOpposite >= (int)ETileEdge.COUNT)
+            iOpposite -= (int)ETileEdge.COUNT;
+
+        return (ETileEdge)iOpposite;
+    }
+
+    public static Vector2Int GetVector2Int(this ETileEdge e)
+    {
+        switch (e)
+        {
+            case ETileEdge.TOP:
+                return new Vector2Int(0, 1);
+            case ETileEdge.RIGHT:
+                return new Vector2Int(1, 0);
+            case ETileEdge.BOTTOM:
+                return new Vector2Int(0, -1);
+            case ETileEdge.LEFT:
+                return new Vector2Int(-1, 0);
+            case ETileEdge.COUNT:
+            default:
+                return new Vector2Int(0, 0);
+        }
+    }
+}
+
+
 public class TileEdge
 {
     const int SAMPLESIZE = 1;

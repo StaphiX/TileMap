@@ -68,11 +68,11 @@ public class SpriteAtlasRenderer : MonoBehaviour {
         //Debug.Log(tTopEdge.GetString() + " " + tRightEdge.GetString() + " " + tBottomEdge.GetString() + " " + tLeftEdge.GetString());
     }
 
-    public void SetSprite(string sprite)
+    public Sprite SetSprite(string sprite)
     {
         if (spriteAtlas == null || spriteRenderer == null)
-            return;
+            return null;
 
-        spriteRenderer.sprite = spriteAtlas.GetSprite(sprite);
+        return spriteRenderer.sprite = spriteAtlas.GetSprite(sprite);
     }
 }

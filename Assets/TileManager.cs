@@ -52,11 +52,18 @@ public class TileManager : MonoBehaviour {
             //Vector3 vTilePos = Vector3.zero;
             //bool bFoundTile = tTileMap.GetTilePos(Input.mousePosition, out vTilePos);
 
-            MapObject mapObject =  tTileMap.GetObjectFromScreen(Input.mousePosition);
+            Tile tile =  tTileMap.GetTileFromScreen(Input.mousePosition);
 
-            if(mapObject != null)
+            if(tile != null)
             {
-                mapObject.CreateTile();
+                List<TileEdge> edgeConstraints = tile.GetTileEdgeConstraints();
+                List<TileSprite> tileSprites = brushManager.FindValidTiles(edgeConstraints);
+
+                if(tileSprites != null)
+                {
+                    int iTileIndex = Random.Range(0, tileSprites.Count);
+                    tile.CreateTile(tileSprites[iTileIndex]);
+                }
             }
 
             //TILEPOS = vTilePos;
@@ -161,5 +168,10 @@ public class TileManager : MonoBehaviour {
         Vector2 vGridPos = vGridOffset + vGridCenter;
 
         return vGridPos;
+    }
+
+    public static Tile GetTile(Vector2Int vGridPos)
+    {
+        return tTileMap.GetTile(vGridPos);
     }
 }

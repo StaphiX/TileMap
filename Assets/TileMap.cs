@@ -30,7 +30,7 @@ public class TileMap
 
     public void AddChunk(TileMapChunk tChunk, int iCol, int iRow, int iRowSize)
     {
-        if(mapRows[iRow] == null)
+        if (mapRows[iRow] == null)
         {
             mapRows[iRow] = new TileMapChunkRow(iRowSize);
         }
@@ -43,8 +43,8 @@ public class TileMap
         int chunkW = vChunkSize.x * vTileSize.x;
         int chunkH = vChunkSize.x * vTileSize.x;
 
-        int colCount = Mathf.Max(Screen.width / chunkH + chunkBuffer*2, 1);
-        int rowCount = Mathf.Max(Screen.height / chunkH + chunkBuffer*2, 1);
+        int colCount = Mathf.Max(Screen.width / chunkH + chunkBuffer * 2, 1);
+        int rowCount = Mathf.Max(Screen.height / chunkH + chunkBuffer * 2, 1);
 
         int startPosX = -(vChunkSize.x * colCount) / 2 + vGridCenter.x;
         int startPosY = -(vChunkSize.y * rowCount) / 2 + vGridCenter.y;
@@ -82,16 +82,31 @@ public class TileMap
         return false;
     }
 
-    public MapObject GetObjectFromScreen(Vector2 vScreenPos)
+    public Tile GetTileFromScreen(Vector2 vScreenPos)
     {
         foreach (TileMapChunkRow row in mapRows)
         {
             if (row == null)
                 continue;
 
-            MapObject mapObject = row.GetObject(vScreenPos);
-            if (mapObject != null)
-                return mapObject;
+            Tile Tile = row.GetTile(vScreenPos);
+            if (Tile != null)
+                return Tile;
+        }
+
+        return null;
+    }
+
+    public Tile GetTile(Vector2Int vGridPos)
+    {
+        foreach (TileMapChunkRow row in mapRows)
+        {
+            if (row == null)
+                continue;
+
+            Tile Tile = row.GetTile(vGridPos);
+            if (Tile != null)
+                return Tile;
         }
 
         return null;

@@ -11,7 +11,7 @@ public class TileMapChunkRow
     {
         length = _length;
 
-        for(int iChunk = 0; iChunk < length; ++iChunk)
+        for (int iChunk = 0; iChunk < length; ++iChunk)
         {
             mapChunks.Add(null);
         }
@@ -53,7 +53,7 @@ public class TileMapChunkRow
         return false;
     }
 
-    public MapObject GetObject(Vector2 vScreenPos)
+    public Tile GetTile(Vector2 vScreenPos)
     {
         Vector2 vTileGridPos = TileManager.ScreenToGrid(vScreenPos);
         foreach (TileMapChunk chunk in mapChunks)
@@ -61,10 +61,26 @@ public class TileMapChunkRow
             if (chunk == null)
                 continue;
 
-            if (chunk.HasTile(vTileGridPos))
+            Vector2Int vGridPosInt = Vector2Int.FloorToInt(vTileGridPos);
+            if (chunk.HasTile(vGridPosInt))
             {
-                Vector2Int vTileIndex = chunk.GetTileIndexFromGridPos(vTileGridPos);
-                return chunk.GetTile(vTileIndex);
+                return chunk.GetTileFromGridPos(vGridPosInt);
+            }
+        }
+
+        return null;
+    }
+
+    public Tile GetTile(Vector2Int vGridPos)
+    {
+        foreach (TileMapChunk chunk in mapChunks)
+        {
+            if (chunk == null)
+                continue;
+
+            if (chunk.HasTile(vGridPos))
+            {
+                return chunk.GetTileFromGridPos(vGridPos);
             }
         }
 

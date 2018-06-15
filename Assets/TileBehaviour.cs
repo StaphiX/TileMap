@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
 
-public class MapObjectBehaviour : MonoBehaviour
+public class TileBehaviour : MonoBehaviour
 {
     private SpriteAtlas spriteAtlas;
     private SpriteRenderer spriteRenderer;

@@ -13,7 +13,7 @@ public class TileMapChunk
     GameObject tiles = null;
     Object lineObj = null;
 
-    MapObject[,] tTile = null;
+    Tile[,] tTile = null;
 
     public Vector2Int GetMapPos() { return vMapPosition; }
     public GameObject GetChunkObject() { return chunk; }
@@ -25,12 +25,12 @@ public class TileMapChunk
         vChunkSize = _vChunkSize;
         vTileSize = _vTileSize;
 
-        tTile = new MapObject[vChunkSize.x, vChunkSize.y];
+        tTile = new Tile[vChunkSize.x, vChunkSize.y];
         for (int col = 0; col < _vChunkSize.x; ++col)
         {
             for (int row = 0; row < _vChunkSize.y; ++row)
             {
-                tTile[col,row] = new MapObject(this, new Vector2Int(col, row), vTileSize);
+                tTile[col,row] = new Tile(this, new Vector2Int(col, row), vTileSize);
             }
         }
     }
@@ -156,29 +156,44 @@ public class TileMapChunk
         return false;
     }
 
-    public Vector3 GetTilePos(Vector2Int vTilePos)
+    public Vector3 GetTilePos(Vector2Int vGridPos)
     {
         Vector2 gridPosition = vMapPosition;
         Vector3 worldPos = TileManager.GridToWorld(gridPosition);
-        Vector3 tileWorldOffset = TileManager.GridToWorld(vTilePos);
+        Vector3 tileWorldOffset = TileManager.GridToWorld(vGridPos);
 
         return worldPos + tileWorldOffset;
     }
 
-    public Vector2Int GetTileIndexFromGridPos(Vector2 vTilePos)
+    public Tile GetTileFromGridPos(Vector2Int vGridPos)
     {
-        int iTileIndexX = Mathf.FloorToInt(vTilePos.x) - GetMapPos().x;
-        int iTileIndexY = Mathf.FloorToInt(vTilePos.y) - GetMapPos().y;
+        int iTileIndexX = vGridPos.x - GetMapPos().x;
+        int iTileIndexY =vGridPos.y - GetMapPos().y;
+        Vector2Int vTileIndex = new Vector2Int(iTileIndexX, iTileIndexY);
+
+        return GetTile(vTileIndex);
+    }
+
+    public Vector2Int GetTileIndexFromGridPos(Vector2 vGridPos)
+    {
+        int iTileIndexX = Mathf.FloorToInt(vGridPos.x) - GetMapPos().x;
+        int iTileIndexY = Mathf.FloorToInt(vGridPos.y) - GetMapPos().y;
         Vector2Int vTileIndex = new Vector2Int(iTileIndexX, iTileIndexY);
 
         return vTileIndex;
     }
 
-    public MapObject GetTile(Vector2Int vTilePos)
+    public Tile GetTile(Vector2Int vTileIndex)
     {
-        if (vTilePos.x >= vChunkSize.x || vTilePos.y >= vChunkSize.y)
+        if (vTileIndex.x >= vChunkSize.x || vTileIndex.y >= vChunkSize.y)
             return null;
 
-        return tTile[vTilePos.x, vTilePos.y];
+        return tTile[vTileIndex.x, vTileIndex.y];
+    }
+
+    public Vector2Int GetGridPosFromTileIndex(Vector2Int vTileIndex)
+    {
+        Vector2Int vGridPos = vTileIndex + GetMapPos(); ;
+        return vGridPos;
     }
 }
