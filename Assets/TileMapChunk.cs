@@ -150,8 +150,9 @@ public class TileMapChunk
     {
         Rect tTileRect = GetTileRect();
 
-        if (tTileRect.Contains(vTilePos))
-            return true;
+        if (vTilePos.x >= tTileRect.x && vTilePos.x < tTileRect.xMax)
+            if (vTilePos.y >= tTileRect.y && vTilePos.y < tTileRect.yMax)
+                return true;
 
         return false;
     }

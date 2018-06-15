@@ -76,7 +76,7 @@ public class Tile
         }
         else
         {
-            return TileManager.GetTile(tilePos);
+            return TileManager.GetTile(neighborPos);
         }
     }
 
