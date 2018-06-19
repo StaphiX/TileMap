@@ -95,6 +95,11 @@ public class TileEdge
         Color cMid = new Color(tMid[0] / 255.0f, tMid[1] / 255.0f, tMid[2] / 255.0f, tMid[3] / 255.0f);
         Color cRight = new Color(tRight[0] / 255.0f, tRight[1] / 255.0f, tRight[2] / 255.0f, tRight[3] / 255.0f);
 
+        Debug.Log(sprite.name + " " + tileEdge + " " + 
+            ColorUtility.ToHtmlStringRGB(cLeft) + "," + 
+            ColorUtility.ToHtmlStringRGB(cMid) + "," + 
+            ColorUtility.ToHtmlStringRGB(cRight));
+
         edgeSample = tLeft.Concat(tMid).Concat(tRight).ToArray();
     }
 
@@ -107,6 +112,11 @@ public class TileEdge
         Color cTop = new Color(tTop[0] / 255.0f, tTop[1] / 255.0f, tTop[2] / 255.0f, tTop[3] / 255.0f);
         Color cMid = new Color(tMid[0] / 255.0f, tMid[1] / 255.0f, tMid[2] / 255.0f, tMid[3] / 255.0f);
         Color cBottom = new Color(tBottom[0] / 255.0f, tBottom[1] / 255.0f, tBottom[2] / 255.0f, tBottom[3] / 255.0f);
+
+        Debug.Log(sprite.name + " " + tileEdge + " " +
+            ColorUtility.ToHtmlStringRGB(cTop) + "," +
+            ColorUtility.ToHtmlStringRGB(cMid) + "," +
+            ColorUtility.ToHtmlStringRGB(cBottom));
 
         edgeSample = tTop.Concat(tMid).Concat(tBottom).ToArray();
     }
