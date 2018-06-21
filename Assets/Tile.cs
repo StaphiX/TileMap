@@ -62,7 +62,7 @@ public class Tile
     public void SetSprite(TileSprite tileSprite)
     {
         this.tileSprite = tileSprite;
-        this.tileSprite.SetObjectSprite(go);
+        this.tileSprite.SetupGameObject(go);
     }
 
     public Tile GetNeighbor(ETileEdge eDirection)

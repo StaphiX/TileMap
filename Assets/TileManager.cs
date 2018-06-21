@@ -59,7 +59,7 @@ public class TileManager : MonoBehaviour {
                 List<TileEdge> edgeConstraints = tile.GetTileEdgeConstraints();
                 List<TileSprite> tileSprites = brushManager.FindValidTiles(edgeConstraints);
 
-                if(tileSprites != null)
+                if(tileSprites != null && tileSprites.Count > 0)
                 {
                     int iTileIndex = Random.Range(0, tileSprites.Count);
                     tile.CreateTile(tileSprites[iTileIndex]);

@@ -6,21 +6,79 @@ using UnityEngine;
 [Flags]
 public enum ETileAttribute
 {
-    NONE =      0,
-    ROTATE =    1 << 0,
-    FLIPX =     1 << 1,
-    FLIPY =     1 << 2
+    NONE =          0,
+    FLIPX =         1 << 1,
+    FLIPY =         1 << 2,
+    ROTATE90 =      1 << 3,
+    ROTATE180 =     1 << 4,
+    ALL =           FLIPX | FLIPY | ROTATE90 | ROTATE180,
+    ROTATEANY =     ROTATE90 | ROTATE180,
 }
 
 public class TileSprite
 {
-    string path = "";
-    ETileAttribute spriteFlags = 0;
-    ETileAttribute tileFlagsSet = 0;
     TileEdge[] edge = new TileEdge[(int)ETileEdge.COUNT];
+    ETileAttribute tileFlags = 0;
     Sprite sprite = null;
 
-    public TileSprite(Sprite sprite)
+    public TileSprite(Sprite sprite, ETileAttribute tileFlags = ETileAttribute.NONE)
+    {
+        this.sprite = sprite;
+        this.tileFlags = tileFlags;
+
+        SetTileEdges(sprite);
+    }
+
+    public TileEdge GetEdge(ETileEdge tileEdge)
+    {
+        return edge[(int)tileEdge];
+    }
+
+    void SetTileEdges(Sprite sprite)
+    {
+        for (int edgeIndex = 0; edgeIndex < (int)ETileEdge.COUNT; ++edgeIndex)
+        {
+            edge[edgeIndex] = new TileEdge(sprite, (ETileEdge)edgeIndex, tileFlags);
+        }
+    }
+
+    public Sprite GetSprite()
+    {
+        return sprite;
+    }
+
+    public void SetupGameObject(GameObject go)
+    {
+        if (sprite != null)
+        {
+            SpriteRenderer spriteRenderer = go.GetComponent<SpriteRenderer>();
+            if (spriteRenderer == null)
+                spriteRenderer = go.AddComponent<SpriteRenderer>();
+
+            spriteRenderer.sprite = sprite;
+
+            if (FlagUtil.IsSet(tileFlags, ETileAttribute.FLIPX))
+                spriteRenderer.flipX = true;
+            if (FlagUtil.IsSet(tileFlags, ETileAttribute.FLIPY))
+                spriteRenderer.flipY = true;
+
+            if (FlagUtil.IsExactly(tileFlags, (ETileAttribute.ROTATE180 | ETileAttribute.ROTATE90)))
+                go.transform.Rotate(Vector3.back * 270);
+            else if (FlagUtil.IsExactly(tileFlags, ETileAttribute.ROTATE180))
+                go.transform.Rotate(Vector3.back * 180);
+            else if (FlagUtil.IsExactly(tileFlags, ETileAttribute.ROTATE90))
+                go.transform.Rotate(Vector3.back * 90);
+        }
+    }
+}
+
+public class TileSpriteProperties
+{
+    string path = "";
+    ETileAttribute spriteFlags = 0;
+    Sprite sprite = null;
+
+    public TileSpriteProperties(Sprite sprite)
     {
         this.sprite = sprite;
 
@@ -35,37 +93,31 @@ public class TileSprite
         path = tileInfo.Substring(substringIndex);
 
         SetTileFlags();
-        SetTileEdges(sprite);
     }
 
-    public void SetObjectSprite(GameObject go)
+    public List<TileSprite> CreateTileSprites()
     {
-        if (sprite != null)
+        List<TileSprite> tileSprites = new List<TileSprite>();
+
+        if (sprite == null)
+            return tileSprites;
+
+        tileSprites.Add(new TileSprite(sprite));
+
+        for(ETileAttribute eFlag = ETileAttribute.FLIPX; eFlag < spriteFlags; ++eFlag)
         {
-            SpriteRenderer spriteRenderer = go.GetComponent<SpriteRenderer>();
-            if (spriteRenderer == null)
-                spriteRenderer = go.AddComponent<SpriteRenderer>();
-
-            spriteRenderer.sprite = sprite;
+            if (FlagUtil.IsExactly(spriteFlags, eFlag))
+            {
+                tileSprites.Add(new TileSprite(sprite, eFlag));
+            }
         }
-    }
 
-    public TileEdge GetEdge(ETileEdge tileEdge)
-    {
-        return edge[(int)tileEdge];
+        return tileSprites;
     }
 
     public Sprite GetSprite()
     {
         return sprite;
-    }
-
-    void SetTileEdges(Sprite sprite)
-    {
-        for (int edgeIndex = 0; edgeIndex < (int)ETileEdge.COUNT; ++edgeIndex)
-        {
-            edge[edgeIndex] = new TileEdge(sprite, (ETileEdge)edgeIndex);
-        }
     }
 
     void SetTileFlags()
@@ -94,7 +146,7 @@ public class TileSprite
             case 'Y':
                 return ETileAttribute.FLIPY;
             case 'R':
-                return ETileAttribute.ROTATE;
+                return ETileAttribute.ROTATEANY;
         }
 
         return ETileAttribute.NONE;

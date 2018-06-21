@@ -48,21 +48,25 @@ public class BrushManager
 
     void RegisterSprite(Sprite sprite)
     {
-        TileSprite tileSprite = new TileSprite(sprite);
-        RegisterTileEdges(tileSprite);
+        TileSpriteProperties tileSpriteProperties = new TileSpriteProperties(sprite);
+        List<TileSprite> tTileSprites = tileSpriteProperties.CreateTileSprites();
+        RegisterTileEdges(tTileSprites);
     }
 
-    public void RegisterTileEdges(TileSprite tileSprite)
+    public void RegisterTileEdges(List<TileSprite> tileSprites)
     {
-        for (int edgeIndex = 0; edgeIndex < (int)ETileEdge.COUNT; ++edgeIndex)
+        foreach (TileSprite tileSprite in tileSprites)
         {
-            ETileEdge tileEdge = (ETileEdge)edgeIndex;
-            if (tileSprite.GetEdge(tileEdge) == null)
-                continue;
+            for (int edgeIndex = 0; edgeIndex < (int)ETileEdge.COUNT; ++edgeIndex)
+            {
+                ETileEdge tileEdge = (ETileEdge)edgeIndex;
+                if (tileSprite.GetEdge(tileEdge) == null)
+                    continue;
 
-            string edgeSample = tileSprite.GetEdge(tileEdge).GetString();
+                string edgeSample = tileSprite.GetEdge(tileEdge).GetString();
 
-            AddToLookup(GetDictionayFromEdge(tileEdge), edgeSample, tileSprite);
+                AddToLookup(GetDictionayFromEdge(tileEdge), edgeSample, tileSprite);
+            }
         }
     }
 

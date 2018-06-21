@@ -53,25 +53,91 @@ public class TileEdge
     ETileEdge tileEdge;
     byte[] edgeSample;
 
-    public TileEdge(Sprite sprite, ETileEdge edge)
+    public TileEdge(Sprite sprite, ETileEdge edge, ETileAttribute eTileFlags = ETileAttribute.NONE)
     {
-        Rect sourceRect = sprite.sourceRect();
+        Rect spriteRect = sprite.sourceRect();
+        RectInt sourceRect = new RectInt((int)spriteRect.x, (int)spriteRect.y, (int)spriteRect.width, (int)spriteRect.height);
+        
         tileEdge = edge;
+
+        Vector2Int vTL, vTR, vBR, vBL;
+        GetCorners(sourceRect, eTileFlags, out vTL, out vTR, out vBR, out vBL);
 
         switch (edge)
         {
             case ETileEdge.TOP:
-                GetXEdge(sprite, (int)sourceRect.x, (int)sourceRect.y, (int)sourceRect.width);
+                GetEdge(sprite, vTL, vTR);
                 break;
             case ETileEdge.RIGHT:
-                GetYEdge(sprite, (int)sourceRect.xMax, (int)sourceRect.y, (int)sourceRect.height);
+                GetEdge(sprite, vTR, vBR);
                 break;
             case ETileEdge.BOTTOM:
-                GetXEdge(sprite, (int)sourceRect.x, (int)sourceRect.yMax, (int)sourceRect.width);
+                GetEdge(sprite, vBL, vBR);
                 break;
             case ETileEdge.LEFT:
-                GetYEdge(sprite, (int)sourceRect.x, (int)sourceRect.y, (int)sourceRect.height);
+                GetEdge(sprite, vTL, vBL);
                 break;
+        }
+    }
+
+    private void GetCorners(RectInt sourceRect, ETileAttribute eTileFlags, out Vector2Int vTL, out Vector2Int vTR, out Vector2Int vBR, out Vector2Int vBL)
+    {
+        vTL = new Vector2Int(sourceRect.x, sourceRect.y);
+        vTR = new Vector2Int(sourceRect.xMax, sourceRect.y);
+        vBR = new Vector2Int(sourceRect.xMax, sourceRect.yMax);
+        vBL = new Vector2Int(sourceRect.x, sourceRect.yMax);
+
+        if (eTileFlags == ETileAttribute.NONE)
+            return;
+
+        if (FlagUtil.IsSet(eTileFlags, ETileAttribute.FLIPX))
+        {
+            Vector2Int vTLCopy = vTL;
+            Vector2Int vTRCopy = vTR;
+            Vector2Int vBRCopy = vBR;
+            Vector2Int vBLCopy = vBL;
+
+            vTL.Set(vTRCopy.x, vTRCopy.y);
+            vTR.Set(vTLCopy.x, vTLCopy.y);
+            vBR.Set(vBLCopy.x, vBLCopy.y);
+            vBL.Set(vBRCopy.x, vBRCopy.y);
+        }
+
+        if (FlagUtil.IsSet(eTileFlags, ETileAttribute.FLIPY))
+        {
+            Vector2Int vTLCopy = vTL;
+            Vector2Int vTRCopy = vTR;
+            Vector2Int vBRCopy = vBR;
+            Vector2Int vBLCopy = vBL;
+
+            vTL.Set(vTLCopy.x, vBLCopy.y);
+            vTR.Set(vTRCopy.x, vBRCopy.y);
+            vBR.Set(vBRCopy.x, vTRCopy.y);
+            vBL.Set(vBLCopy.x, vTLCopy.y);
+        }
+
+        if (FlagUtil.IsSet(eTileFlags, ETileAttribute.ROTATEANY))
+        {
+            Vector2Int[] vCorners = { vTL, vTR, vBR, vBL };
+
+            ETileAttribute eRotate = (eTileFlags & ETileAttribute.ROTATEANY);
+            int iRotateOffset = 1;
+            if (eRotate == ETileAttribute.ROTATE90)
+                iRotateOffset = 2;
+            else if (eRotate == ETileAttribute.ROTATE180)
+                iRotateOffset = 3;
+            else if (eRotate == (ETileAttribute.ROTATE180 | ETileAttribute.ROTATE90))
+                iRotateOffset = 4;
+
+            int iTL = iRotateOffset % 4;
+            int iTR = (iRotateOffset + 1) % 4;
+            int iBR = (iRotateOffset + 2) % 4;
+            int iBL = (iRotateOffset + 3) % 4;
+
+            vTL.Set(vCorners[iTL].x, vCorners[iTL].y);
+            vTR.Set(vCorners[iTR].x, vCorners[iTR].y);
+            vBR.Set(vCorners[iBR].x, vCorners[iBR].y);
+            vBL.Set(vCorners[iBL].x, vCorners[iBL].y);
         }
     }
 
@@ -83,6 +149,18 @@ public class TileEdge
     public string GetString()
     {
         return Convert.ToBase64String(edgeSample);
+    }
+
+    private void GetEdge(Sprite sprite, Vector2Int vStart, Vector2Int vEnd)
+    {
+        bool bHorizontal = true;
+        if (vEnd.y > vStart.y)
+            bHorizontal = false;
+
+        if (bHorizontal)
+            GetXEdge(sprite, vStart.x, vStart.y, vEnd.x - vStart.x);
+        else
+            GetYEdge(sprite, vStart.x, vStart.y, vEnd.y - vStart.y);
     }
 
     private void GetXEdge(Sprite sprite, int iX, int iY, int iW)
