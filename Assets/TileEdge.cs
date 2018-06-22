@@ -78,6 +78,12 @@ public class TileEdge
                 GetEdge(sprite, vTL, vBL);
                 break;
         }
+
+        if(sprite.name.Contains("Tile1"))
+        {
+            Debug.Log(eTileFlags + " " + edge + " " + 
+                ColorUtility.ToHtmlStringRGBA(new Color32(edgeSample[4], edgeSample[5], edgeSample[6], edgeSample[7])));
+        }
     }
 
     private void GetCorners(RectInt sourceRect, ETileAttribute eTileFlags, out Vector2Int vTL, out Vector2Int vTR, out Vector2Int vBR, out Vector2Int vBL)
@@ -110,10 +116,10 @@ public class TileEdge
             Vector2Int vBRCopy = vBR;
             Vector2Int vBLCopy = vBL;
 
-            vTL.Set(vTLCopy.x, vBLCopy.y);
-            vTR.Set(vTRCopy.x, vBRCopy.y);
-            vBR.Set(vBRCopy.x, vTRCopy.y);
-            vBL.Set(vBLCopy.x, vTLCopy.y);
+            vTL.Set(vBLCopy.x, vBLCopy.y);
+            vTR.Set(vBRCopy.x, vBRCopy.y);
+            vBR.Set(vTRCopy.x, vTRCopy.y);
+            vBL.Set(vTLCopy.x, vTLCopy.y);
         }
 
         if (FlagUtil.IsSet(eTileFlags, ETileAttribute.ROTATEANY))
@@ -123,11 +129,11 @@ public class TileEdge
             ETileAttribute eRotate = (eTileFlags & ETileAttribute.ROTATEANY);
             int iRotateOffset = 1;
             if (eRotate == ETileAttribute.ROTATE90)
-                iRotateOffset = 2;
+                iRotateOffset = 1;
             else if (eRotate == ETileAttribute.ROTATE180)
-                iRotateOffset = 3;
+                iRotateOffset = 2;
             else if (eRotate == (ETileAttribute.ROTATE180 | ETileAttribute.ROTATE90))
-                iRotateOffset = 4;
+                iRotateOffset = 3;
 
             int iTL = iRotateOffset % 4;
             int iTR = (iRotateOffset + 1) % 4;
@@ -154,7 +160,7 @@ public class TileEdge
     private void GetEdge(Sprite sprite, Vector2Int vStart, Vector2Int vEnd)
     {
         bool bHorizontal = true;
-        if (vEnd.y > vStart.y)
+        if (Mathf.Abs(vEnd.y - vStart.y) > Mathf.Abs(vEnd.x - vStart.x))
             bHorizontal = false;
 
         if (bHorizontal)
@@ -173,10 +179,10 @@ public class TileEdge
         Color cMid = new Color(tMid[0] / 255.0f, tMid[1] / 255.0f, tMid[2] / 255.0f, tMid[3] / 255.0f);
         Color cRight = new Color(tRight[0] / 255.0f, tRight[1] / 255.0f, tRight[2] / 255.0f, tRight[3] / 255.0f);
 
-        Debug.Log(sprite.name + " " + tileEdge + " " + 
-            ColorUtility.ToHtmlStringRGB(cLeft) + "," + 
-            ColorUtility.ToHtmlStringRGB(cMid) + "," + 
-            ColorUtility.ToHtmlStringRGB(cRight));
+        //Debug.Log(sprite.name + " " + tileEdge + " " + 
+        //    ColorUtility.ToHtmlStringRGB(cLeft) + "," + 
+        //    ColorUtility.ToHtmlStringRGB(cMid) + "," + 
+        //    ColorUtility.ToHtmlStringRGB(cRight));
 
         edgeSample = tLeft.Concat(tMid).Concat(tRight).ToArray();
     }
@@ -191,10 +197,10 @@ public class TileEdge
         Color cMid = new Color(tMid[0] / 255.0f, tMid[1] / 255.0f, tMid[2] / 255.0f, tMid[3] / 255.0f);
         Color cBottom = new Color(tBottom[0] / 255.0f, tBottom[1] / 255.0f, tBottom[2] / 255.0f, tBottom[3] / 255.0f);
 
-        Debug.Log(sprite.name + " " + tileEdge + " " +
-            ColorUtility.ToHtmlStringRGB(cTop) + "," +
-            ColorUtility.ToHtmlStringRGB(cMid) + "," +
-            ColorUtility.ToHtmlStringRGB(cBottom));
+        //Debug.Log(sprite.name + " " + tileEdge + " " +
+        //    ColorUtility.ToHtmlStringRGB(cTop) + "," +
+        //    ColorUtility.ToHtmlStringRGB(cMid) + "," +
+        //    ColorUtility.ToHtmlStringRGB(cBottom));
 
         edgeSample = tTop.Concat(tMid).Concat(tBottom).ToArray();
     }
