@@ -80,7 +80,7 @@ public class Tile
         }
     }
 
-    public List<TileEdge> GetTileEdgeConstraints()
+    public List<TileEdge> GetTileNeighborEdges()
     {
         List<TileEdge> tileEdges = new List<TileEdge>();
         for (int tileEdge = 0; tileEdge < (int)ETileEdge.COUNT; ++tileEdge)
@@ -88,9 +88,16 @@ public class Tile
             ETileEdge eTileEdge = (ETileEdge)tileEdge;
             ETileEdge eOppositeEdge = eTileEdge.Opposite();
 
-            Tile tile = GetNeighbor(eTileEdge);
-            if (tile != null)
-                tileEdges.Add(tile.GetTileEdge(eOppositeEdge));
+            Tile neighbor = GetNeighbor(eTileEdge);
+            if (neighbor != null)
+            {
+                TileEdge neighborEdge = neighbor.GetTileEdge(eOppositeEdge);
+                if (neighborEdge != null)
+                {
+                    tileEdges.Add(neighborEdge);
+                }
+            }
+
         }
 
         return tileEdges;

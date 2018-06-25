@@ -74,23 +74,14 @@ public class TileSprite
 
 public class TileSpriteProperties
 {
-    string path = "";
+    string fileName = "";
     ETileAttribute spriteFlags = 0;
     Sprite sprite = null;
 
     public TileSpriteProperties(Sprite sprite)
     {
         this.sprite = sprite;
-
-        string tileInfo = UnityEditor.AssetDatabase.GetAssetPath(sprite.texture);
-        string subString = "Atlas/";
-        int substringIndex = tileInfo.LastIndexOf(subString);
-        if (substringIndex < 0)
-            substringIndex = 0;
-        else
-            substringIndex += subString.Length;
-
-        path = tileInfo.Substring(substringIndex);
+        fileName = sprite.name;
 
         SetTileFlags();
     }
@@ -122,15 +113,17 @@ public class TileSpriteProperties
 
     void SetTileFlags()
     {
-        if (path == null || path.Length <= 0)
+        if (fileName == null || fileName.Length <= 0)
             return;
 
-        string filename = path.Substring(path.LastIndexOf("/") + 1);
-        int underscoreIndex = filename.LastIndexOf("_");
-        int dotIndex = Mathf.Max(filename.LastIndexOf("."), underscoreIndex+1);
-        string attributes = filename.Substring(underscoreIndex + 1, dotIndex - underscoreIndex-1);
+        int underscoreIndex = fileName.LastIndexOf("_");
+        int endIndex = fileName.IndexOf("(", underscoreIndex);
+        if (endIndex < 0)
+            endIndex = fileName.Length;
 
-        for(int attributeIndex = 0; attributeIndex < attributes.Length; ++attributeIndex)
+        string attributes = fileName.Substring(underscoreIndex + 1, endIndex - underscoreIndex - 1);
+
+        for (int attributeIndex = 0; attributeIndex < attributes.Length; ++attributeIndex)
         {
             ETileAttribute eFlag = ConvertToTileFlag(attributes[attributeIndex]);
             spriteFlags |= eFlag;

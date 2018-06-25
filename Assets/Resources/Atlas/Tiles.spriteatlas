@@ -25,21 +25,23 @@ SpriteAtlas:
       blockOffset: 1
       allowAlphaSplitting: 0
       enableRotation: 1
-      enableTightPacking: 1
+      enableTightPacking: 0
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 397e43e6c8d5aad45b8e73a8144cc6b2, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: 2369043b8264c264a8a2a972e10fb8f4, type: 3}
-  - {fileID: 21300000, guid: 98e7e954e9e97b7408d0f29965e8e99f, type: 3}
-  - {fileID: 21300000, guid: 7a3f59a9c1e1e6d439656fc45eb63bc6, type: 3}
-  - {fileID: 21300000, guid: b870ee2b03187a94a80f5161f34656a0, type: 3}
+  - {fileID: 21300000, guid: a3d9ac71cdd26a8479b420edc8a4b8c0, type: 3}
+  - {fileID: 21300000, guid: f6e4d854de7d2be4abc8fc249fe38ac5, type: 3}
+  - {fileID: 21300000, guid: 435f3df409629854484d5830309bb645, type: 3}
+  - {fileID: 21300000, guid: bf39b0cc737de4049a03ebfdeb24f875, type: 3}
+  - {fileID: 21300000, guid: 9ad44b7557ff9ff49a83356d1cf8aee1, type: 3}
   m_PackedSpriteNamesToIndex:
-  - Tile1
-  - Tile3
-  - Tile2
-  - Tile4
+  - WaterGrass_XYR
+  - GrassWaterCorner_XYR
+  - Grass_XYR
+  - WaterGrassCorner_XYR
+  - Water_XYR
   m_Tag: Tiles
   m_IsVariant: 0

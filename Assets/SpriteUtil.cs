@@ -6,6 +6,11 @@ public static class SpriteUtil
 {
     public static Rect sourceRect(this Sprite s)
     {
+        if(s.packingMode != SpritePackingMode.Tight)
+        {
+            return s.textureRect;
+        }
+
         Rect spriteRect = s.rect;
         Vector2[] uvs = s.uv;
         Texture2D sourceTex = s.texture;
@@ -20,37 +25,29 @@ public static class SpriteUtil
         return new Rect(fX, fY, fW, fH);
     }
 
-    public static byte[] GetXBytes(this Sprite s, int iStartX, int iStartY, int iLength)
+    public static Color32[] GetColorsX(this Sprite s, int iStartX, int iStartY, int iLength)
     {
-        byte[] tBytes = new byte[iLength * 4];
-        for (int iX = iStartX; iX < iStartX + iLength; ++iX)
+        Rect sourceRect = s.sourceRect();
+        Color32[] colors = new Color32[iLength];
+        for (int index = 0; index < iLength; ++index)
         {
-            int iIndex = iX - iStartX;
-            Color c = s.texture.GetPixel(iX, iStartY);
-
-            tBytes[iIndex] = (byte)(c.r * 255.0f);
-            tBytes[iIndex + 1] = (byte)(c.g * 255.0f);
-            tBytes[iIndex + 2] = (byte)(c.b * 255.0f);
-            tBytes[iIndex + 3] = (byte)(c.a * 255.0f);
+            int pixelX = index + iStartX;
+            colors[index] = s.texture.GetPixel(pixelX, iStartY);
         }
 
-        return tBytes;
+        return colors;
     }
 
-    public static byte[] GetYBytes(this Sprite s, int iStartX, int iStartY, int iLength)
+    public static Color32[] GetColorsY(this Sprite s, int iStartX, int iStartY, int iLength)
     {
-        byte[] tBytes = new byte[iLength * 4];
-        for (int iY = iStartY; iY < iStartY + iLength; ++iY)
+        Rect sourceRect = s.sourceRect();
+        Color32[] colors = new Color32[iLength];
+        for (int index = 0; index < iLength; ++index)
         {
-            int iIndex = iY - iStartY;
-            Color c = s.texture.GetPixel(iStartX, iY);
-
-            tBytes[iIndex] = (byte)(c.r * 255.0f);
-            tBytes[iIndex + 1] = (byte)(c.g * 255.0f);
-            tBytes[iIndex + 2] = (byte)(c.b * 255.0f);
-            tBytes[iIndex + 3] = (byte)(c.a * 255.0f);
+            int pixelY = index + iStartY;
+            colors[index] = s.texture.GetPixel(iStartX, pixelY);
         }
 
-        return tBytes;
+        return colors;
     }
 }

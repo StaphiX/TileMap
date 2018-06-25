@@ -51,7 +51,7 @@ public class TileEdge
     const int SAMPLESIZE = 1;
 
     ETileEdge tileEdge;
-    byte[] edgeSample;
+    Color32[] edgeSample;
 
     public TileEdge(Sprite sprite, ETileEdge edge, ETileAttribute eTileFlags = ETileAttribute.NONE)
     {
@@ -62,6 +62,11 @@ public class TileEdge
 
         Vector2Int vTL, vTR, vBR, vBL;
         GetCorners(sourceRect, eTileFlags, out vTL, out vTR, out vBR, out vBL);
+
+        if (this.tileEdge == ETileEdge.LEFT && sprite.name.Contains("WaterGrass_"))
+        {
+            Debug.Log(eTileFlags);
+        }
 
         switch (edge)
         {
@@ -79,19 +84,27 @@ public class TileEdge
                 break;
         }
 
-        if(sprite.name.Contains("Tile1"))
-        {
-            Debug.Log(eTileFlags + " " + edge + " " + 
-                ColorUtility.ToHtmlStringRGBA(new Color32(edgeSample[4], edgeSample[5], edgeSample[6], edgeSample[7])));
-        }
+        //if(sprite.name.Contains("Tile1"))
+        //{
+        //    Color32 debugCol = edgeSample[1];
+        //    string colName = "RED";
+        //    if (debugCol.r > 200 && debugCol.b > 200)
+        //        colName = "MAGENTA";
+        //    else if (debugCol.r > 200 && debugCol.g > 200)
+        //        colName = "YELLOW";
+        //    else if (debugCol.b > 200)
+        //        colName = "CYAN";
+        //    Debug.Log(eTileFlags + " " + edge + " " + colName);
+        //}
     }
 
     private void GetCorners(RectInt sourceRect, ETileAttribute eTileFlags, out Vector2Int vTL, out Vector2Int vTR, out Vector2Int vBR, out Vector2Int vBL)
     {
-        vTL = new Vector2Int(sourceRect.x, sourceRect.y);
-        vTR = new Vector2Int(sourceRect.xMax, sourceRect.y);
-        vBR = new Vector2Int(sourceRect.xMax, sourceRect.yMax);
-        vBL = new Vector2Int(sourceRect.x, sourceRect.yMax);
+        // Unity textures start in the bottom left so TOP = y + height
+        vTL = new Vector2Int(sourceRect.x, sourceRect.yMax);
+        vTR = new Vector2Int(sourceRect.xMax, sourceRect.yMax);
+        vBR = new Vector2Int(sourceRect.xMax, sourceRect.y);
+        vBL = new Vector2Int(sourceRect.x, sourceRect.y);
 
         if (eTileFlags == ETileAttribute.NONE)
             return;
@@ -127,13 +140,13 @@ public class TileEdge
             Vector2Int[] vCorners = { vTL, vTR, vBR, vBL };
 
             ETileAttribute eRotate = (eTileFlags & ETileAttribute.ROTATEANY);
-            int iRotateOffset = 1;
+            int iRotateOffset = 3;
             if (eRotate == ETileAttribute.ROTATE90)
-                iRotateOffset = 1;
+                iRotateOffset = 3;
             else if (eRotate == ETileAttribute.ROTATE180)
                 iRotateOffset = 2;
             else if (eRotate == (ETileAttribute.ROTATE180 | ETileAttribute.ROTATE90))
-                iRotateOffset = 3;
+                iRotateOffset = 1;
 
             int iTL = iRotateOffset % 4;
             int iTR = (iRotateOffset + 1) % 4;
@@ -152,9 +165,9 @@ public class TileEdge
         return tileEdge;
     }
 
-    public string GetString()
+    public string GetHash()
     {
-        return Convert.ToBase64String(edgeSample);
+        return edgeSample.ToBase64String();
     }
 
     private void GetEdge(Sprite sprite, Vector2Int vStart, Vector2Int vEnd)
@@ -171,37 +184,39 @@ public class TileEdge
 
     private void GetXEdge(Sprite sprite, int iX, int iY, int iW)
     {
-        byte[] tLeft = sprite.GetXBytes(iX, iY, SAMPLESIZE);
-        byte[] tMid = sprite.GetXBytes(iX + iW / 2 - SAMPLESIZE / 2, iY, SAMPLESIZE);
-        byte[] tRight = sprite.GetXBytes(iX + iW - SAMPLESIZE, iY, SAMPLESIZE);
-
-        Color cLeft = new Color(tLeft[0] / 255.0f, tLeft[1] / 255.0f, tLeft[2] / 255.0f, tLeft[3] / 255.0f);
-        Color cMid = new Color(tMid[0] / 255.0f, tMid[1] / 255.0f, tMid[2] / 255.0f, tMid[3] / 255.0f);
-        Color cRight = new Color(tRight[0] / 255.0f, tRight[1] / 255.0f, tRight[2] / 255.0f, tRight[3] / 255.0f);
-
-        //Debug.Log(sprite.name + " " + tileEdge + " " + 
-        //    ColorUtility.ToHtmlStringRGB(cLeft) + "," + 
-        //    ColorUtility.ToHtmlStringRGB(cMid) + "," + 
-        //    ColorUtility.ToHtmlStringRGB(cRight));
+        int sampleOffset = iW < 0 ? -SAMPLESIZE : SAMPLESIZE;
+        Color32[] tLeft = sprite.GetColorsX(iX, iY, SAMPLESIZE);
+        Color32[] tMid = sprite.GetColorsX(iX + iW / 2 - sampleOffset / 2, iY, SAMPLESIZE);
+        Color32[] tRight = sprite.GetColorsX(iX + iW - sampleOffset, iY, SAMPLESIZE);
 
         edgeSample = tLeft.Concat(tMid).Concat(tRight).ToArray();
+
+        if (this.tileEdge == ETileEdge.LEFT && sprite.name.Contains("WaterGrass_"))
+        {
+            Color32 debugCol = tMid[0];
+            string colName = "BLUE";
+            if (debugCol.b < 200)
+                colName = "GREEN";
+            Debug.Log(this.tileEdge + " " + colName);
+        }
     }
 
     private void GetYEdge(Sprite sprite, int iX, int iY, int iH)
     {
-        byte[] tTop = sprite.GetYBytes(iX, iY, SAMPLESIZE);
-        byte[] tMid = sprite.GetYBytes(iX, iY + iH / 2 - SAMPLESIZE / 2, SAMPLESIZE);
-        byte[] tBottom = sprite.GetYBytes(iX, iY + iH - SAMPLESIZE, SAMPLESIZE);
-
-        Color cTop = new Color(tTop[0] / 255.0f, tTop[1] / 255.0f, tTop[2] / 255.0f, tTop[3] / 255.0f);
-        Color cMid = new Color(tMid[0] / 255.0f, tMid[1] / 255.0f, tMid[2] / 255.0f, tMid[3] / 255.0f);
-        Color cBottom = new Color(tBottom[0] / 255.0f, tBottom[1] / 255.0f, tBottom[2] / 255.0f, tBottom[3] / 255.0f);
-
-        //Debug.Log(sprite.name + " " + tileEdge + " " +
-        //    ColorUtility.ToHtmlStringRGB(cTop) + "," +
-        //    ColorUtility.ToHtmlStringRGB(cMid) + "," +
-        //    ColorUtility.ToHtmlStringRGB(cBottom));
+        int sampleOffset = iH < 0 ? -SAMPLESIZE : SAMPLESIZE;
+        Color32[] tTop = sprite.GetColorsY(iX, iY, SAMPLESIZE);
+        Color32[] tMid = sprite.GetColorsY(iX, iY + iH / 2 - sampleOffset / 2, SAMPLESIZE);
+        Color32[] tBottom = sprite.GetColorsY(iX, iY + iH - sampleOffset, SAMPLESIZE);
 
         edgeSample = tTop.Concat(tMid).Concat(tBottom).ToArray();
+
+        if (this.tileEdge == ETileEdge.LEFT && sprite.name.Contains("WaterGrass_"))
+        {
+            Color32 debugCol = tMid[0];
+            string colName = "BLUE";
+            if (debugCol.b < 200)
+                colName = "GREEN";
+            Debug.Log(this.tileEdge + " " + colName);
+        }
     }
 }

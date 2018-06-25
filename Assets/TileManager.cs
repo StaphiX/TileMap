@@ -56,8 +56,8 @@ public class TileManager : MonoBehaviour {
 
             if(tile != null)
             {
-                List<TileEdge> edgeConstraints = tile.GetTileEdgeConstraints();
-                List<TileSprite> tileSprites = brushManager.FindValidTiles(edgeConstraints);
+                List<TileEdge> neighborEdges = tile.GetTileNeighborEdges();
+                List<TileSprite> tileSprites = brushManager.FindValidTiles(neighborEdges);
 
                 if(tileSprites != null && tileSprites.Count > 0)
                 {
