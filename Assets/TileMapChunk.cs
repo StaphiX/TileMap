@@ -94,8 +94,9 @@ public class TileMapChunk
         Object whiteObj = Resources.Load("White");
         GameObject gridSprite = (GameObject)GameObject.Instantiate(whiteObj, chunk.transform);
         gridSprite.name = "GridSprite";
-        float fMapCol = (Mathf.Abs(GetTileRect().center.x) * 5 + Mathf.Abs(GetTileRect().center.y * 2)) / 255.0f;
-        gridSprite.GetComponent<SpriteRenderer>().color = new Color(fMapCol, fMapCol, fMapCol);
+        Color mapCol0 = new Color(200, 200, 200);
+        Color mapCol1 = new Color(0, 0, 0);
+        gridSprite.GetComponent<SpriteRenderer>().color = vMapPosition.x + vMapPosition.y % 2 == 0 ? mapCol0 : mapCol1;
         gridSprite.transform.localPosition = Vector3.zero;
         gridSprite.transform.localScale = new Vector3(fScaleX, fScaleY, 1);
         gridSprite.transform.SetParent(grid.transform);

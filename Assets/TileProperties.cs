@@ -117,6 +117,8 @@ public class TileSpriteProperties
             return;
 
         int underscoreIndex = fileName.LastIndexOf("_");
+        if (underscoreIndex < 0)
+            return;
         int endIndex = fileName.IndexOf("(", underscoreIndex);
         if (endIndex < 0)
             endIndex = fileName.Length;
