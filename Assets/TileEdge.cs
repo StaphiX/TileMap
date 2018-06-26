@@ -101,9 +101,9 @@ public class TileEdge
     private void GetCorners(RectInt sourceRect, ETileAttribute eTileFlags, out Vector2Int vTL, out Vector2Int vTR, out Vector2Int vBR, out Vector2Int vBL)
     {
         // Unity textures start in the bottom left so TOP = y + height
-        vTL = new Vector2Int(sourceRect.x, sourceRect.yMax);
-        vTR = new Vector2Int(sourceRect.xMax, sourceRect.yMax);
-        vBR = new Vector2Int(sourceRect.xMax, sourceRect.y);
+        vTL = new Vector2Int(sourceRect.x, sourceRect.yMax-1);
+        vTR = new Vector2Int(sourceRect.xMax-1, sourceRect.yMax-1);
+        vBR = new Vector2Int(sourceRect.xMax-1, sourceRect.y);
         vBL = new Vector2Int(sourceRect.x, sourceRect.y);
 
         if (eTileFlags == ETileAttribute.NONE)
@@ -177,18 +177,28 @@ public class TileEdge
             bHorizontal = false;
 
         if (bHorizontal)
-            GetXEdge(sprite, vStart.x, vStart.y, vEnd.x - vStart.x);
+        {
+            int iW = vEnd.x - vStart.x;
+            iW += iW < 0 ? -1 : 1;
+            GetXEdge(sprite, vStart.x, vStart.y, iW);
+        }
         else
-            GetYEdge(sprite, vStart.x, vStart.y, vEnd.y - vStart.y);
+        {
+            int iH = vEnd.y - vStart.y;
+            iH += iH < 0 ? -1 : 1;
+            GetYEdge(sprite, vStart.x, vStart.y, iH);
+        }
     }
 
     private void GetXEdge(Sprite sprite, int iX, int iY, int iW)
     {
-        int sampleOffset = iW < 0 ? -SAMPLESIZE : SAMPLESIZE;
-        int sampleOffsetHalf = sampleOffset / 2 + sampleOffset % 2;
-        Color32[] tLeft = sprite.GetColorsX(iX, iY, SAMPLESIZE);
-        Color32[] tMid = sprite.GetColorsX(iX + iW / 2 - sampleOffsetHalf, iY, SAMPLESIZE);
-        Color32[] tRight = sprite.GetColorsX(iX + iW - sampleOffset, iY, SAMPLESIZE);
+        int leftOffset = 0;
+        int rightOffset = iW < 0 ? SAMPLESIZE : -SAMPLESIZE;
+        int midOffset = iW < 0 ? Mathf.CeilToInt(SAMPLESIZE / 2.0f) : Mathf.FloorToInt(-SAMPLESIZE / 2.0f);
+
+        Color32[] tLeft = sprite.GetColorsX(iX + leftOffset, iY, SAMPLESIZE);
+        Color32[] tMid = sprite.GetColorsX(iX + iW / 2 + midOffset, iY, SAMPLESIZE);
+        Color32[] tRight = sprite.GetColorsX(iX + iW + rightOffset, iY, SAMPLESIZE);
 
         edgeSample = tLeft.Concat(tMid).Concat(tRight).ToArray();
 
@@ -203,12 +213,16 @@ public class TileEdge
     }
 
     private void GetYEdge(Sprite sprite, int iX, int iY, int iH)
-    { 
-        int sampleOffset = iH < 0 ? -SAMPLESIZE : SAMPLESIZE;
-        int sampleOffsetHalf = Mathf.CeilToInt((float)sampleOffset / 2.0f);
-        Color32[] tTop = sprite.GetColorsY(iX, iY + sampleOffset, SAMPLESIZE);
-        Color32[] tMid = sprite.GetColorsY(iX, iY + iH / 2 - sampleOffsetHalf, SAMPLESIZE);
-        Color32[] tBottom = sprite.GetColorsY(iX, iY + iH, SAMPLESIZE);
+    {
+        int sampleLength = iH < 0 ? -SAMPLESIZE : SAMPLESIZE;
+
+        int topOffset = 0;
+        int bottomOffset = iH < 0 ? SAMPLESIZE : -SAMPLESIZE;
+        int midOffset = iH < 0 ? Mathf.CeilToInt(SAMPLESIZE/2.0f) : Mathf.FloorToInt(-SAMPLESIZE /2.0f);
+
+        Color32[] tTop = sprite.GetColorsY(iX, iY + topOffset, sampleLength);
+        Color32[] tMid = sprite.GetColorsY(iX, iY + iH / 2 + midOffset, sampleLength);
+        Color32[] tBottom = sprite.GetColorsY(iX, iY + iH + bottomOffset, sampleLength);
 
         edgeSample = tTop.Concat(tMid).Concat(tBottom).ToArray();
 

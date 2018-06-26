@@ -40,11 +40,14 @@ public static class SpriteUtil
 
     public static Color32[] GetColorsY(this Sprite s, int iStartX, int iStartY, int iLength)
     {
+        int iAbsLength = Mathf.Abs(iLength);
         Rect sourceRect = s.sourceRect();
-        Color32[] colors = new Color32[iLength];
-        for (int index = 0; index < iLength; ++index)
+        Color32[] colors = new Color32[iAbsLength];
+
+        for (int index = 0; index < iAbsLength; ++index)
         {
-            int pixelY = index + iStartY;
+            int pixelOffset = iLength < 0 ? -index : index;
+            int pixelY = pixelOffset + iStartY;
             colors[index] = s.texture.GetPixel(iStartX, pixelY);
         }
 
