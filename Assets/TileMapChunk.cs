@@ -62,9 +62,8 @@ public class TileMapChunk
 
     public void Create()
     {
-        int iMapX = (vMapPosition.x + TileManager.CHUNKCOUNT.x / 2) / TileManager.CHUNKCOUNT.x;
-        int iMapY = (vMapPosition.y + TileManager.CHUNKCOUNT.y / 2) / TileManager.CHUNKCOUNT.y;
-        chunk = new GameObject("Chunk [" + iMapX + "][" + iMapY + "]");
+        Vector2Int vMapIndex = GetMapIndex();
+        chunk = new GameObject("Chunk [" + vMapIndex.x + "][" + vMapIndex.y + "]");
         tiles = new GameObject("Tiles");
 
         Vector2Int vGridPosition = Vector2Int.FloorToInt(vMapPosition) + new Vector2Int(vChunkSize.x/2, vChunkSize.y/2);
@@ -94,9 +93,10 @@ public class TileMapChunk
         Object whiteObj = Resources.Load("White");
         GameObject gridSprite = (GameObject)GameObject.Instantiate(whiteObj, chunk.transform);
         gridSprite.name = "GridSprite";
-        Color mapCol0 = new Color(200, 200, 200);
-        Color mapCol1 = new Color(0, 0, 0);
-        gridSprite.GetComponent<SpriteRenderer>().color = vMapPosition.x + vMapPosition.y % 2 == 0 ? mapCol0 : mapCol1;
+        Color32 mapCol0 = new Color32(60, 60, 60, 255);
+        Color32 mapCol1 = new Color32(0, 0, 0, 255);
+        Vector2Int vMapIndex = GetMapIndex();
+        gridSprite.GetComponent<SpriteRenderer>().color = (vMapIndex.x + vMapIndex.y) % 2 == 0 ? mapCol0 : mapCol1;
         gridSprite.transform.localPosition = Vector3.zero;
         gridSprite.transform.localScale = new Vector3(fScaleX, fScaleY, 1);
         gridSprite.transform.SetParent(grid.transform);
@@ -183,6 +183,15 @@ public class TileMapChunk
         Vector2Int vTileIndex = new Vector2Int(iTileIndexX, iTileIndexY);
 
         return vTileIndex;
+    }
+
+    public Vector2Int GetMapIndex()
+    {
+        int iMapX = Mathf.CeilToInt((float)(vMapPosition.x + TileManager.CHUNKCOUNT.x / 2) / (float)TileManager.CHUNKCOUNT.x);
+        int iMapY = Mathf.CeilToInt((float)(vMapPosition.y + TileManager.CHUNKCOUNT.y / 2) / (float)TileManager.CHUNKCOUNT.y);
+        Vector2Int vMapIndex = new Vector2Int(iMapX, iMapY);
+
+        return vMapIndex;
     }
 
     public Tile GetTile(Vector2Int vTileIndex)
