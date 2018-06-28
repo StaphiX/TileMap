@@ -15,6 +15,28 @@ public enum ETileAttribute
     ROTATEANY =     ROTATE90 | ROTATE180,
 }
 
+public class TileSpriteNeighbor
+{
+    ETileEdge edge;
+    TileSprite tileSprite;
+
+    TileSpriteNeighbor(TileSprite tileSprite, ETileEdge edge)
+    {
+        this.edge = edge;
+        this.tileSprite = tileSprite;
+    }
+
+    ETileEdge GetJoinEdge()
+    {
+        return edge;
+    }
+
+    TileSprite GetTileSprite()
+    {
+        return tileSprite;
+    }
+}
+
 public class TileSprite
 {
     TileEdge[] edge = new TileEdge[(int)ETileEdge.COUNT];
@@ -45,6 +67,11 @@ public class TileSprite
     public Sprite GetSprite()
     {
         return sprite;
+    }
+
+    public ETileAttribute GetFlags()
+    {
+        return tileFlags;
     }
 
     public void SetupGameObject(GameObject go)

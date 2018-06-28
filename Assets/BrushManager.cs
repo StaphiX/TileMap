@@ -80,7 +80,7 @@ public class BrushManager
         edgeLookup[edgeSample].Add(tileProp);
     }
 
-    public List<TileSprite> FindValidTiles(List<TileEdge> neighborEdges)
+    public List<TileSprite> FindValidTiles(List<TileSpriteNeighbor> neighborTiles)
     {
         // Find a list of tiles from the edgeLookup
         // This finds tiles based on a sample of the tile edge
@@ -90,7 +90,7 @@ public class BrushManager
 
         bool bHasConstraints = false;
         List<TileSprite> tileList = null;
-        foreach (TileEdge edge in neighborEdges)
+        foreach (TileSpriteNeighbor neighbor in neighborTiles)
         {
             if (edge == null)
                 continue;

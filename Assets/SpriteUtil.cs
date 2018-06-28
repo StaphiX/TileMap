@@ -25,13 +25,22 @@ public static class SpriteUtil
         return new Rect(fX, fY, fW, fH);
     }
 
+    public static Color32 GetColor(this Sprite s, int x, int y)
+    {
+        if (s == null)
+            return Color.black;
+
+        return s.texture.GetPixel(x, y);
+    }
+
     public static Color32[] GetColorsX(this Sprite s, int iStartX, int iStartY, int iLength)
     {
-        Rect sourceRect = s.sourceRect();
-        Color32[] colors = new Color32[iLength];
-        for (int index = 0; index < iLength; ++index)
+        int iAbsLength = Mathf.Abs(iLength);
+        Color32[] colors = new Color32[iAbsLength];
+        for (int index = 0; index < iAbsLength; ++index)
         {
-            int pixelX = index + iStartX;
+            int pixelOffset = iLength < 0 ? -index : index;
+            int pixelX = pixelOffset + iStartX;
             colors[index] = s.texture.GetPixel(pixelX, iStartY);
         }
 
@@ -41,9 +50,7 @@ public static class SpriteUtil
     public static Color32[] GetColorsY(this Sprite s, int iStartX, int iStartY, int iLength)
     {
         int iAbsLength = Mathf.Abs(iLength);
-        Rect sourceRect = s.sourceRect();
         Color32[] colors = new Color32[iAbsLength];
-
         for (int index = 0; index < iAbsLength; ++index)
         {
             int pixelOffset = iLength < 0 ? -index : index;

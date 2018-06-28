@@ -55,34 +55,16 @@ public class TileEdge
 
     public TileEdge(Sprite sprite, ETileEdge edge, ETileAttribute eTileFlags = ETileAttribute.NONE)
     {
-        Rect spriteRect = sprite.sourceRect();
-        RectInt sourceRect = new RectInt((int)spriteRect.x, (int)spriteRect.y, (int)spriteRect.width, (int)spriteRect.height);
-        
         tileEdge = edge;
-
-        Vector2Int vTL, vTR, vBR, vBL;
-        GetCorners(sourceRect, eTileFlags, out vTL, out vTR, out vBR, out vBL);
 
         if (this.tileEdge == ETileEdge.LEFT && sprite.name.Contains("WaterGrass_"))
         {
             Debug.Log(eTileFlags);
         }
 
-        switch (edge)
-        {
-            case ETileEdge.TOP:
-                GetEdge(sprite, vTL, vTR);
-                break;
-            case ETileEdge.RIGHT:
-                GetEdge(sprite, vTR, vBR);
-                break;
-            case ETileEdge.BOTTOM:
-                GetEdge(sprite, vBL, vBR);
-                break;
-            case ETileEdge.LEFT:
-                GetEdge(sprite, vTL, vBL);
-                break;
-        }
+        Vector2Int vEdgeStart, vEdgeEnd;
+        GetEdgePoints(sprite, edge, eTileFlags, out vEdgeStart, out vEdgeEnd);
+        SetEdgeSample(sprite, vEdgeStart, vEdgeEnd);       
 
         //if(sprite.name.Contains("Tile1"))
         //{
@@ -98,7 +80,40 @@ public class TileEdge
         //}
     }
 
-    private void GetCorners(RectInt sourceRect, ETileAttribute eTileFlags, out Vector2Int vTL, out Vector2Int vTR, out Vector2Int vBR, out Vector2Int vBL)
+    private static void GetEdgePoints(Sprite sprite, ETileEdge edge, ETileAttribute eTileFlags, out Vector2Int vStart, out Vector2Int vEnd)
+    {
+        Rect spriteRect = sprite.sourceRect();
+        RectInt sourceRect = new RectInt((int)spriteRect.x, (int)spriteRect.y, (int)spriteRect.width, (int)spriteRect.height);
+
+        Vector2Int vTL, vTR, vBR, vBL;
+        GetCorners(sourceRect, eTileFlags, out vTL, out vTR, out vBR, out vBL);
+
+        switch (edge)
+        {
+            case ETileEdge.TOP:
+                vStart = vTL;
+                vEnd = vTR;
+                break;
+            case ETileEdge.RIGHT:
+                vStart = vTR;
+                vEnd = vBR;
+                break;
+            case ETileEdge.BOTTOM:
+                vStart = vBL;
+                vEnd = vBR;
+                break;
+            case ETileEdge.LEFT:
+                vStart = vTL;
+                vEnd = vBL;
+                break;
+            default:
+                vStart = vTL;
+                vEnd = vTR;
+                break;
+        }
+    }
+
+    private static void GetCorners(RectInt sourceRect, ETileAttribute eTileFlags, out Vector2Int vTL, out Vector2Int vTR, out Vector2Int vBR, out Vector2Int vBL)
     {
         // Unity textures start in the bottom left so TOP = y + height
         vTL = new Vector2Int(sourceRect.x, sourceRect.yMax-1);
@@ -170,7 +185,7 @@ public class TileEdge
         return edgeSample.ToBase64String();
     }
 
-    private void GetEdge(Sprite sprite, Vector2Int vStart, Vector2Int vEnd)
+    private void SetEdgeSample(Sprite sprite, Vector2Int vStart, Vector2Int vEnd)
     {
         bool bHorizontal = true;
         if (Mathf.Abs(vEnd.y - vStart.y) > Mathf.Abs(vEnd.x - vStart.x))
@@ -180,17 +195,17 @@ public class TileEdge
         {
             int iW = vEnd.x - vStart.x;
             iW += iW < 0 ? -1 : 1;
-            GetXEdge(sprite, vStart.x, vStart.y, iW);
+            GetXEdgeSample(sprite, vStart.x, vStart.y, iW);
         }
         else
         {
             int iH = vEnd.y - vStart.y;
             iH += iH < 0 ? -1 : 1;
-            GetYEdge(sprite, vStart.x, vStart.y, iH);
+            GetYEdgeSample(sprite, vStart.x, vStart.y, iH);
         }
     }
 
-    private void GetXEdge(Sprite sprite, int iX, int iY, int iW)
+    private void GetXEdgeSample(Sprite sprite, int iX, int iY, int iW)
     {
         int leftOffset = 0;
         int rightOffset = iW < 0 ? SAMPLESIZE : -SAMPLESIZE;
@@ -212,7 +227,7 @@ public class TileEdge
         }
     }
 
-    private void GetYEdge(Sprite sprite, int iX, int iY, int iH)
+    private void GetYEdgeSample(Sprite sprite, int iX, int iY, int iH)
     {
         int sampleLength = iH < 0 ? -SAMPLESIZE : SAMPLESIZE;
 
@@ -234,5 +249,85 @@ public class TileEdge
                 colName = "GREEN";
             Debug.Log(this.tileEdge + " " + colName);
         }
+    }
+
+    public static bool CompareEdges(TileSprite tileSprite, TileSprite neighborTileSprite, ETileEdge tileEdge)
+    {
+        int pixelThreshold = 0;
+
+        Sprite sprite = tileSprite.GetSprite();
+        Sprite neighborSprite = neighborTileSprite.GetSprite();
+        ETileAttribute spriteFlags = tileSprite.GetFlags();
+        ETileAttribute neighborFlags = neighborTileSprite.GetFlags();
+
+        Vector2Int vTileEdgeStart, vTileEdgeEnd, vNeighborEdgeStart, vNeighborEdgeEnd;
+        GetEdgePoints(sprite, tileEdge, spriteFlags, out vTileEdgeStart, out vTileEdgeEnd);
+        GetEdgePoints(neighborSprite, tileEdge.Opposite(), neighborFlags, out vNeighborEdgeStart, out vNeighborEdgeEnd);
+
+        int tileWidth = vTileEdgeEnd.x - vTileEdgeStart.x;
+        int tileHeight = vTileEdgeEnd.y - vTileEdgeStart.y;
+        int neighborWidth = vNeighborEdgeEnd.x - vNeighborEdgeStart.x;
+        int neighborHeight = vNeighborEdgeEnd.y - vNeighborEdgeStart.y;
+
+        int absWidth = Math.Abs(tileWidth);
+        int absHeight = Math.Abs(tileHeight);
+
+        int totalPixelDiff = 0;
+        int totalPixelCount = 0;
+
+        if (absWidth > absHeight)
+        {
+            int tileY = vTileEdgeStart.y;
+            int neighborY = vNeighborEdgeStart.y;
+            for (int pixel = 0; pixel < absWidth; ++pixel)
+            {
+                int tileOffset = tileWidth < 0 ? -1 : 1;
+                int neighborOffset = neighborWidth < 0 ? -1 : 1;
+                int tileX = vTileEdgeStart.x + pixel * tileOffset;
+                int neighborX = vNeighborEdgeStart.x + pixel * neighborOffset;
+
+                Color32 spriteCol = sprite.GetColor(tileX, tileY);
+                Color32 neighborCol = neighborSprite.GetColor(neighborX, neighborY);
+                int pixelDiff = ComparePixel(spriteCol, neighborCol);
+                totalPixelDiff += pixelDiff;
+                ++totalPixelCount;
+            }
+        }
+        else
+        {
+            int tileX = vTileEdgeStart.x;
+            int neighborX = vNeighborEdgeStart.x;
+            for (int pixel = 0; pixel < absHeight; ++pixel)
+            {
+                int tileOffset = tileHeight < 0 ? -1 : 1;
+                int neighborOffset = neighborHeight < 0 ? -1 : 1;
+                int tileY = vTileEdgeStart.y + pixel * tileOffset;
+                int neighborY = vNeighborEdgeStart.y + pixel * neighborOffset;
+
+                Color32 spriteCol = sprite.GetColor(tileX, tileY);
+                Color32 neighborCol = neighborSprite.GetColor(neighborX, neighborY);
+                int pixelDiff = ComparePixel(spriteCol, neighborCol);
+                totalPixelDiff += pixelDiff;
+                ++totalPixelCount;
+            }
+        }
+
+        int averageDiff = Mathf.CeilToInt(totalPixelDiff / totalPixelCount);
+        if (averageDiff <= pixelThreshold)
+            return true;
+
+        return false;
+    }
+
+    public static int ComparePixel(Color32 color, Color32 compare)
+    {
+        int diff = Math.Abs(color.r - compare.r);
+        diff += Math.Abs(color.g - compare.g);
+        diff += Math.Abs(color.b - compare.b);
+        diff += Math.Abs(color.a - compare.a);
+
+        int averageDiff = Mathf.CeilToInt((float)diff / 4.0f);
+
+        return averageDiff;
     }
 }
