@@ -17,21 +17,29 @@ public enum ETileAttribute
 
 public class TileSpriteNeighbor
 {
-    ETileEdge edge;
+    ETileEdge joinEdge;
     TileSprite tileSprite;
 
-    TileSpriteNeighbor(TileSprite tileSprite, ETileEdge edge)
+    public TileSpriteNeighbor(TileSprite tileSprite, ETileEdge joinEdge)
     {
-        this.edge = edge;
+        this.joinEdge = joinEdge;
         this.tileSprite = tileSprite;
     }
 
-    ETileEdge GetJoinEdge()
+    public TileEdge GetEdge()
     {
-        return edge;
+        if (tileSprite == null)
+            return null;
+
+        return tileSprite.GetEdge(joinEdge.Opposite());
     }
 
-    TileSprite GetTileSprite()
+    public ETileEdge GetJoinEdge()
+    {
+        return joinEdge;
+    }
+
+    public TileSprite GetTileSprite()
     {
         return tileSprite;
     }
@@ -96,6 +104,11 @@ public class TileSprite
             else if (FlagUtil.IsExactly(tileFlags, ETileAttribute.ROTATE90))
                 go.transform.Rotate(Vector3.back * 90);
         }
+    }
+
+    public bool CompareEdge(TileSprite neighborTileSprite, ETileEdge edge)
+    {
+        return TileEdge.CompareEdges(this, neighborTileSprite, edge);
     }
 }
 

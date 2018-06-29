@@ -253,7 +253,7 @@ public class TileEdge
 
     public static bool CompareEdges(TileSprite tileSprite, TileSprite neighborTileSprite, ETileEdge tileEdge)
     {
-        int pixelThreshold = 0;
+        int pixelThreshold = 2;
 
         Sprite sprite = tileSprite.GetSprite();
         Sprite neighborSprite = neighborTileSprite.GetSprite();

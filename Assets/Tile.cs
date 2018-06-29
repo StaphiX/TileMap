@@ -39,6 +39,11 @@ public class Tile
         return parent.GetTilePos(tilePosition);
     }
 
+    public TileSprite GetTileSprite()
+    {
+        return tileSprite;
+    }
+
 
     public void CreateTile(TileSprite tileSprite)
     {
@@ -101,6 +106,25 @@ public class Tile
         }
 
         return tileEdges;
+    }
+
+    public List<TileSpriteNeighbor> GetNeighborTileSprites()
+    {
+        List<TileSpriteNeighbor> tileSprites = new List<TileSpriteNeighbor>();
+        for (int tileEdge = 0; tileEdge < (int)ETileEdge.COUNT; ++tileEdge)
+        {
+            ETileEdge eTileEdge = (ETileEdge)tileEdge;
+            ETileEdge eOppositeEdge = eTileEdge.Opposite();
+
+            Tile neighbor = GetNeighbor(eTileEdge);
+            if (neighbor != null && neighbor.GetTileSprite() != null)
+            {
+                tileSprites.Add(new TileSpriteNeighbor(neighbor.GetTileSprite(), eTileEdge));
+            }
+
+        }
+
+        return tileSprites;
     }
 
     public TileEdge GetTileEdge(ETileEdge eEdge)

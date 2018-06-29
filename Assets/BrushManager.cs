@@ -89,67 +89,72 @@ public class BrushManager
         // This gives us a list of all suitable tiles for a space
 
         bool bHasConstraints = false;
-        List<TileSprite> tileList = null;
+        List<TileSprite> candidateList = null;
         foreach (TileSpriteNeighbor neighbor in neighborTiles)
         {
-            if (edge == null)
+            if (neighbor == null)
                 continue;
 
-            string edgeHash = edge.GetHash();
-            ETileEdge eTileEdge = edge.GetETileEdge();
-            ETileEdge eConstraintEdge = edge.GetETileEdge().Opposite();
+            TileEdge neighborEdge = neighbor.GetEdge();
+            if (neighborEdge == null)
+                continue;
 
-            if (tileList == null)
+            TileSprite neighborTileSprite = neighbor.GetTileSprite();
+            string neighborEdgeHash = neighborEdge.GetHash();
+            ETileEdge eNeighborEdge = neighborEdge.GetETileEdge();
+            ETileEdge eCandidateEdge = eNeighborEdge.Opposite();
+
+            if (candidateList == null)
             {
                 bHasConstraints = true;
 
-                EdgeLookupType edgeLookup = GetDictionayFromEdge(eConstraintEdge);
-                if (edgeLookup.ContainsKey(edge.GetHash()))
+                EdgeLookupType edgeLookup = GetDictionayFromEdge(eCandidateEdge);
+                if (edgeLookup.ContainsKey(neighborEdgeHash))
                 {
-                    tileList = new List<TileSprite>(edgeLookup[edge.GetHash()]);
-                    continue;
+                    candidateList = new List<TileSprite>(edgeLookup[neighborEdgeHash]);
                 }
             }
             else
             {
-                for(int tileIndex = tileList.Count-1; tileIndex >= 0; --tileIndex)
+                // Remove candidates based on edge hash
+                for (int tileIndex = candidateList.Count - 1; tileIndex >= 0; --tileIndex)
                 {
-                    TileSprite tileListSprite = tileList[tileIndex];
-                    TileEdge tileListEdge = tileListSprite.GetEdge(eConstraintEdge);
-                    string tileSpriteEdgeHash = tileListEdge.GetHash();
+                    TileSprite candidateTileSprite = candidateList[tileIndex];
+                    TileEdge candidateTileEdge = candidateTileSprite.GetEdge(eCandidateEdge);
+                    string candidateTileEdgeHash = candidateTileEdge.GetHash();
 
-                    if (!tileSpriteEdgeHash.Equals(edgeHash))
-                        tileList.RemoveAt(tileIndex);
+                    if (!candidateTileEdgeHash.Equals(neighborEdgeHash))
+                        candidateList.RemoveAt(tileIndex);
                 }
+            }
+
+            // Remove candidates based on full edge comparison
+            for (int tileIndex = candidateList.Count - 1; tileIndex >= 0; --tileIndex)
+            {
+                TileSprite candidateTileSprite = candidateList[tileIndex];
+
+                if (!candidateTileSprite.CompareEdge(neighborTileSprite, eCandidateEdge))
+                    candidateList.RemoveAt(tileIndex);
             }
         }
 
-        if (tileList == null)
+        if (candidateList == null)
         {
             // We can use any tile
-            if(!bHasConstraints)
+            if (!bHasConstraints)
             {
-                tileList = new List<TileSprite>();
-                foreach(List<TileSprite> lookupList in edgeTopLookup.Values)
+                candidateList = new List<TileSprite>();
+                foreach (List<TileSprite> lookupList in edgeTopLookup.Values)
                 {
-                    foreach(TileSprite tileSprite in lookupList)
+                    foreach (TileSprite tileSprite in lookupList)
                     {
-                        tileList.Add(tileSprite);
+                        candidateList.Add(tileSprite);
                     }
                 }
             }
         }
 
-        return tileList;
-
-        // Now do a full comparison of tile edges to make sure it is suitable
-        /*
-        foreach (TileSprite tile in tileList)
-        {
-            return tile.GetEdge();
-        }*/
-
-        return null;
+        return candidateList;
     }
 
     EdgeLookupType GetDictionayFromEdge(ETileEdge tileEdge)
