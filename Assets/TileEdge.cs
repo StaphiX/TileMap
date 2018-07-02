@@ -272,44 +272,42 @@ public class TileEdge
         int absWidth = Math.Abs(tileWidth);
         int absHeight = Math.Abs(tileHeight);
 
+        int neighborAbsWidth = Math.Abs(neighborWidth);
+        int neighborAbsHeight = Math.Abs(neighborHeight);
+
+        int tileOffsetY = 0;
+        if (absHeight > absWidth)
+            tileOffsetY = tileHeight > 0 ? 1 : -1;
+
+        int tileOffsetX = 0;
+        if (absWidth >= absHeight)
+            tileOffsetX = tileWidth > 0 ? 1 : -1;
+
+        int neighborOffsetY = 0;
+        if (neighborAbsHeight > neighborAbsWidth)
+            neighborOffsetY = neighborHeight > 0 ? 1 : -1;
+
+        int neighborOffsetX = 0;
+        if (neighborAbsWidth >= neighborAbsHeight)
+            neighborOffsetX = neighborWidth > 0 ? 1 : -1;
+
+        int pixelCount = absWidth > absHeight ? absWidth : absHeight;
+
         int totalPixelDiff = 0;
         int totalPixelCount = 0;
 
-        if (absWidth > absHeight)
+        for (int pixel = 0; pixel < pixelCount; ++pixel)
         {
-            int tileY = vTileEdgeStart.y;
-            int neighborY = vNeighborEdgeStart.y;
-            for (int pixel = 0; pixel < absWidth; ++pixel)
-            {
-                int tileOffset = tileWidth < 0 ? -1 : 1;
-                int neighborOffset = neighborWidth < 0 ? -1 : 1;
-                int tileX = vTileEdgeStart.x + pixel * tileOffset;
-                int neighborX = vNeighborEdgeStart.x + pixel * neighborOffset;
+            int tileX = vTileEdgeStart.x + pixel * tileOffsetX;
+            int neighborX = vNeighborEdgeStart.x + pixel * neighborOffsetX;
+            int tileY = vTileEdgeStart.y + pixel * tileOffsetY;
+            int neighborY = vNeighborEdgeStart.y + pixel * neighborOffsetY;
 
-                Color32 spriteCol = sprite.GetColor(tileX, tileY);
-                Color32 neighborCol = neighborSprite.GetColor(neighborX, neighborY);
-                int pixelDiff = ComparePixel(spriteCol, neighborCol);
-                totalPixelDiff += pixelDiff;
-                ++totalPixelCount;
-            }
-        }
-        else
-        {
-            int tileX = vTileEdgeStart.x;
-            int neighborX = vNeighborEdgeStart.x;
-            for (int pixel = 0; pixel < absHeight; ++pixel)
-            {
-                int tileOffset = tileHeight < 0 ? -1 : 1;
-                int neighborOffset = neighborHeight < 0 ? -1 : 1;
-                int tileY = vTileEdgeStart.y + pixel * tileOffset;
-                int neighborY = vNeighborEdgeStart.y + pixel * neighborOffset;
-
-                Color32 spriteCol = sprite.GetColor(tileX, tileY);
-                Color32 neighborCol = neighborSprite.GetColor(neighborX, neighborY);
-                int pixelDiff = ComparePixel(spriteCol, neighborCol);
-                totalPixelDiff += pixelDiff;
-                ++totalPixelCount;
-            }
+            Color32 spriteCol = sprite.GetColor(tileX, tileY);
+            Color32 neighborCol = neighborSprite.GetColor(neighborX, neighborY);
+            int pixelDiff = ComparePixel(spriteCol, neighborCol);
+            totalPixelDiff += pixelDiff;
+            ++totalPixelCount;
         }
 
         int averageDiff = Mathf.CeilToInt(totalPixelDiff / totalPixelCount);

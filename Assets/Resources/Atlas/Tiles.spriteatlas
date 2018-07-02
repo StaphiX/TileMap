@@ -32,100 +32,16 @@ SpriteAtlas:
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: 925872f4cd0648e4dbf876cb97af019e, type: 3}
-  - {fileID: 21300000, guid: 394383c2e8bdbc143b4858377a5513f0, type: 3}
-  - {fileID: 21300000, guid: 71bd436cebe0cc44eaf0ed58e494eafe, type: 3}
-  - {fileID: 21300000, guid: aee725d1ffa82a04989b14155fa978d2, type: 3}
-  - {fileID: 21300000, guid: 429d0380f0c0d7e4db44d6b27f8f93a7, type: 3}
-  - {fileID: 21300000, guid: 11290a7b9a27a544faf46edc3b099636, type: 3}
-  - {fileID: 21300000, guid: 5d8f81e1ea8ee064384783303b67bb90, type: 3}
-  - {fileID: 21300000, guid: f59e5a1a2baf2c94b8dbeb4c7e75c5c6, type: 3}
-  - {fileID: 21300000, guid: 115a70bcd4058fc49a9f1013eb524cd2, type: 3}
-  - {fileID: 21300000, guid: f70cf4e024a16264b961c935a2d239f0, type: 3}
-  - {fileID: 21300000, guid: 28c8d3708b9308544ad15e0914b3d15b, type: 3}
-  - {fileID: 21300000, guid: c277ab9a39bda144d8cdcb0ed8afdd2b, type: 3}
-  - {fileID: 21300000, guid: c9698f189cce8674cb42679cd0d62e15, type: 3}
-  - {fileID: 21300000, guid: 5534ca1e174c37049b1f215c40c3c9ab, type: 3}
-  - {fileID: 21300000, guid: 072e0f4ab8abad743834c0633eed19c1, type: 3}
-  - {fileID: 21300000, guid: 5a278bfdaf8d4fb4fbc72f8fc05f1ae5, type: 3}
-  - {fileID: 21300000, guid: 15c65d8d4a3dd154899207c00fb4299c, type: 3}
-  - {fileID: 21300000, guid: 7fc4ea6ffa5326f4f8c1b42ce960892b, type: 3}
-  - {fileID: 21300000, guid: fd7691d46ea03b549ab2ef65ba5d1cb1, type: 3}
-  - {fileID: 21300000, guid: 1513de5dfdbdb6946af9413ee115af47, type: 3}
-  - {fileID: 21300000, guid: db92c7c514f943142b46ad9d434bda67, type: 3}
-  - {fileID: 21300000, guid: 8d2d52b170f13834da20d1df94d84e60, type: 3}
-  - {fileID: 21300000, guid: 02d8acfef073b5a4ba0cab43c68cb1e5, type: 3}
-  - {fileID: 21300000, guid: 6f4cbc55dbd4ef34f80de61601709e91, type: 3}
-  - {fileID: 21300000, guid: 49dd8cdc82bd0b042b008fabdf1a1002, type: 3}
-  - {fileID: 21300000, guid: ade8873eac2966b40b20112dc6d399fb, type: 3}
-  - {fileID: 21300000, guid: 9cf1b007f9c04ae4b998773fa8e5cfa7, type: 3}
-  - {fileID: 21300000, guid: d50d0a1b8cbae824ba0f7a032ce92fb9, type: 3}
-  - {fileID: 21300000, guid: 00669f3f4aa8cb14da464f892dd3567f, type: 3}
-  - {fileID: 21300000, guid: 4ba4e4b60e424884192e6b9fb90ebe68, type: 3}
-  - {fileID: 21300000, guid: 5f79ee4ab5aa4ae4284df71dd5e97644, type: 3}
-  - {fileID: 21300000, guid: 3e7188d20ab4c3f439761cf73ccad9b5, type: 3}
-  - {fileID: 21300000, guid: 4c61525bd1a784343aedd19b5c271de5, type: 3}
-  - {fileID: 21300000, guid: 3d40afac83a9b854a840b6549f3f0abb, type: 3}
-  - {fileID: 21300000, guid: 5c154ae98200ad94c9acf3566113551c, type: 3}
-  - {fileID: 21300000, guid: 10f5eab2b659d47499bcfd92a212c9a7, type: 3}
-  - {fileID: 21300000, guid: a0421595a0351eb44aadbae90f2b2fbf, type: 3}
-  - {fileID: 21300000, guid: b98557a01d9a75641965851b7488157b, type: 3}
-  - {fileID: 21300000, guid: e81ce96fdcb924545946f850b25b4ea3, type: 3}
-  - {fileID: 21300000, guid: 1f7066370827a9247b1e3f9a76d33350, type: 3}
-  - {fileID: 21300000, guid: 7b58a7de88337e446a3bdb258bcfd071, type: 3}
-  - {fileID: 21300000, guid: f439fce3407e68f4bab064909333e996, type: 3}
-  - {fileID: 21300000, guid: b638d3548810c3d43bd05e91ef55d6b1, type: 3}
-  - {fileID: 21300000, guid: 715de6d5de96023439fd5929f1478bd1, type: 3}
-  - {fileID: 21300000, guid: eddf9a9398fe99b4a97d76a5f53e1b8c, type: 3}
-  - {fileID: 21300000, guid: 5985ad80316a56c4fb6c97719d567e94, type: 3}
-  - {fileID: 21300000, guid: 74c4c7f28cf948e41944af43ac82c730, type: 3}
+  - {fileID: 21300000, guid: a3d9ac71cdd26a8479b420edc8a4b8c0, type: 3}
+  - {fileID: 21300000, guid: f6e4d854de7d2be4abc8fc249fe38ac5, type: 3}
+  - {fileID: 21300000, guid: 435f3df409629854484d5830309bb645, type: 3}
+  - {fileID: 21300000, guid: bf39b0cc737de4049a03ebfdeb24f875, type: 3}
+  - {fileID: 21300000, guid: 9ad44b7557ff9ff49a83356d1cf8aee1, type: 3}
   m_PackedSpriteNamesToIndex:
-  - Grass-26
-  - Grass-27
-  - Grass-24
-  - Grass-25
-  - Grass-39
-  - Grass-22
-  - Grass-38
-  - Grass-23
-  - Grass-20
-  - Grass-21
-  - Grass-31
-  - Grass-30
-  - Grass-33
-  - Grass-28
-  - Grass-32
-  - Grass-44
-  - Grass-29
-  - Grass-35
-  - Grass-45
-  - Grass-34
-  - Grass-46
-  - Grass-37
-  - Grass-47
-  - Grass-36
-  - Grass-40
-  - Grass-41
-  - Grass-42
-  - Grass-43
-  - Grass-02
-  - Grass-03
-  - Grass-13
-  - Grass-04
-  - Grass-12
-  - Grass-05
-  - Grass-11
-  - Grass-06
-  - Grass-10
-  - Grass-07
-  - Grass-17
-  - Grass-08
-  - Grass-16
-  - Grass-09
-  - Grass-15
-  - Grass-14
-  - Grass-19
-  - Grass-18
-  - Grass
+  - WaterGrass_XYR
+  - GrassWaterCorner_XYR
+  - Grass_XYR
+  - WaterGrassCorner_XYR
+  - Water_XYR
   m_Tag: Tiles
   m_IsVariant: 0
