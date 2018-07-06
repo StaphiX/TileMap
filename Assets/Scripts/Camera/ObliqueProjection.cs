@@ -7,9 +7,28 @@ public class ObliqueProjection : MonoBehaviour
     public float angle = 45.0f;
     public float zScale = 0.5f;
     public float zOffset = 0.0f;
+    public static int PIXELSPERUNIT = 64;
+    public static int PIXELSCALE = 1;
+
+    private int screenHeight = Screen.height;
+    Camera camera = null;
+
+    private void Awake()
+    {
+
+    }
+
+    public void Update()
+    {
+        if(screenHeight != Screen.height)
+            camera.orthographicSize = ((float)Screen.height / ((float)PIXELSCALE * (float)PIXELSPERUNIT)) * 0.5f;
+    }
 
     public void Apply ()
     {
+        if (camera == null)
+            camera = GetComponent<Camera>();
+
         camera.orthographic = true;
         var orthoHeight = camera.orthographicSize;
         var orthoWidth = camera.aspect * orthoHeight;
