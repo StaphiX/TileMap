@@ -78,7 +78,9 @@ public class TileManager : MonoBehaviour {
 
     void SetupCamera()
     {
-        Camera.main.orthographicSize = ((float)Screen.height / ((float)PIXELSCALE * (float)PIXELSPERUNIT)) * 0.5f;
+        Camera.main.transform.localRotation = Quaternion.AngleAxis(180, new Vector3(1, 0, 0));
+        Vector3 vCameraPos = new Vector3(0, 10, 10);
+        Camera.main.transform.position = vCameraPos;
     }
 
     void InitialiseMap()
